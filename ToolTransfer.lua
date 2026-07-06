@@ -1,5 +1,5 @@
 --[[
-    TOOL TRANSFER SYSTEM - LOADSTRING VERSION
+    TOOL TRANSFER SYSTEM - LOADSTRING VERSION (PC + MOBILE)
     Copy and paste into your executor:
     
     loadstring(game:HttpGet("https://raw.githubusercontent.com/pdiddy445/Meme231/main/ToolTransfer.lua"))()
@@ -7,9 +7,10 @@
     Features:
     - Give tools to other players
     - GUI interface with player list
-    - Tool preview
+    - PC: Press K to open
+    - Mobile: Tap button to open
     - Safety checks
-    - Chat notifications
+    - Auto-refresh
 ]]
 
 local Players = game:GetService("Players")
@@ -24,6 +25,52 @@ local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
 local selectedTool = nil
 local selectedPlayer = nil
 local toolTransferGUI = nil
+local menuButton = nil
+
+-- ===== CREATE MENU BUTTON (MOBILE) =====
+local function createMenuButton()
+    local screenGui = Instance.new("ScreenGui")
+    screenGui.Name = "ToolTransferMenuGUI"
+    screenGui.ResetOnSpawn = false
+    screenGui.Parent = player:WaitForChild("PlayerGui")
+    
+    local button = Instance.new("TextButton")
+    button.Name = "MenuButton"
+    button.Size = UDim2.new(0, 80, 0, 50)
+    button.Position = UDim2.new(0, 10, 0.5, -25)
+    button.BackgroundColor3 = Color3.fromRGB(255, 100, 0)
+    button.BackgroundTransparency = 0.2
+    button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    button.TextSize = 16
+    button.Font = Enum.Font.GothamBold
+    button.Text = "🎁"
+    button.BorderSizePixel = 2
+    button.BorderColor3 = Color3.fromRGB(255, 150, 0)
+    button.Parent = screenGui
+    
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 10)
+    corner.Parent = button
+    
+    button.MouseButton1Click:Connect(function()
+        if toolTransferGUI then
+            toolTransferGUI:Destroy()
+            toolTransferGUI = nil
+        else
+            toolTransferGUI = createToolTransferGUI()
+        end
+    end)
+    
+    button.MouseEnter:Connect(function()
+        button.BackgroundColor3 = Color3.fromRGB(255, 120, 0)
+    end)
+    
+    button.MouseLeave:Connect(function()
+        button.BackgroundColor3 = Color3.fromRGB(255, 100, 0)
+    end)
+    
+    return button, screenGui
+end
 
 -- ===== CREATE MAIN GUI =====
 local function createToolTransferGUI()
@@ -96,6 +143,7 @@ local function createToolTransferGUI()
     
     closeBtn.MouseButton1Click:Connect(function()
         screenGui:Destroy()
+        toolTransferGUI = nil
     end)
     
     -- ===== TOOLS SECTION =====
@@ -124,13 +172,7 @@ local function createToolTransferGUI()
     toolsCorner.CornerRadius = UDim.new(0, 8)
     toolsCorner.Parent = toolsContainer
     
-    -- Tools List
-    local toolsList = Instance.new("UIListLayout")
-    toolsList.Parent = toolsContainer
-    toolsList.Padding = UDim.new(0, 5)
-    toolsList.FillDirection = Enum.FillDirection.Vertical
-    toolsList.SortOrder = Enum.SortOrder.LayoutOrder
-    
+    -- Tools Grid Layout
     local toolsScroll = Instance.new("UIGridLayout")
     toolsScroll.Parent = toolsContainer
     toolsScroll.CellPadding = UDim2.new(0, 5, 0, 5)
@@ -335,7 +377,7 @@ local function createToolTransferGUI()
     return screenGui
 end
 
--- ===== ACTIVATION =====
+-- ===== PC KEYBOARD INPUT =====
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
     if gameProcessed then return end
     
@@ -350,5 +392,9 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
     end
 end)
 
+-- ===== INITIALIZATION =====
+menuButton, _ = createMenuButton()
+
 print("✓ Tool Transfer System Loaded!")
-print("Press K to open the Tool Transfer GUI")
+print("PC: Press K to open the Tool Transfer GUI")
+print("Mobile: Tap the 🎁 button on the side")
