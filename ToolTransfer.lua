@@ -27,53 +27,11 @@ local selectedPlayer = nil
 local toolTransferGUI = nil
 local menuButton = nil
 
--- ===== CREATE MENU BUTTON (MOBILE) =====
-local function createMenuButton()
-    local screenGui = Instance.new("ScreenGui")
-    screenGui.Name = "ToolTransferMenuGUI"
-    screenGui.ResetOnSpawn = false
-    screenGui.Parent = player:WaitForChild("PlayerGui")
-    
-    local button = Instance.new("TextButton")
-    button.Name = "MenuButton"
-    button.Size = UDim2.new(0, 80, 0, 50)
-    button.Position = UDim2.new(0, 10, 0.5, -25)
-    button.BackgroundColor3 = Color3.fromRGB(255, 100, 0)
-    button.BackgroundTransparency = 0.2
-    button.TextColor3 = Color3.fromRGB(255, 255, 255)
-    button.TextSize = 16
-    button.Font = Enum.Font.GothamBold
-    button.Text = "🎁"
-    button.BorderSizePixel = 2
-    button.BorderColor3 = Color3.fromRGB(255, 150, 0)
-    button.Parent = screenGui
-    
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0, 10)
-    corner.Parent = button
-    
-    button.MouseButton1Click:Connect(function()
-        if toolTransferGUI then
-            toolTransferGUI:Destroy()
-            toolTransferGUI = nil
-        else
-            toolTransferGUI = createToolTransferGUI()
-        end
-    end)
-    
-    button.MouseEnter:Connect(function()
-        button.BackgroundColor3 = Color3.fromRGB(255, 120, 0)
-    end)
-    
-    button.MouseLeave:Connect(function()
-        button.BackgroundColor3 = Color3.fromRGB(255, 100, 0)
-    end)
-    
-    return button, screenGui
-end
+-- Forward declare the function
+local createToolTransferGUI
 
 -- ===== CREATE MAIN GUI =====
-local function createToolTransferGUI()
+function createToolTransferGUI()
     -- Create ScreenGui
     local screenGui = Instance.new("ScreenGui")
     screenGui.Name = "ToolTransferGUI"
@@ -375,6 +333,54 @@ local function createToolTransferGUI()
     updatePlayersList()
     
     return screenGui
+end
+
+-- ===== CREATE MENU BUTTON (MOBILE) =====
+local function createMenuButton()
+    local screenGui = Instance.new("ScreenGui")
+    screenGui.Name = "ToolTransferMenuGUI"
+    screenGui.ResetOnSpawn = false
+    screenGui.Parent = player:WaitForChild("PlayerGui")
+    
+    local button = Instance.new("TextButton")
+    button.Name = "MenuButton"
+    button.Size = UDim2.new(0, 80, 0, 50)
+    button.Position = UDim2.new(0, 10, 0.5, -25)
+    button.BackgroundColor3 = Color3.fromRGB(255, 100, 0)
+    button.BackgroundTransparency = 0.2
+    button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    button.TextSize = 16
+    button.Font = Enum.Font.GothamBold
+    button.Text = "🎁"
+    button.BorderSizePixel = 2
+    button.BorderColor3 = Color3.fromRGB(255, 150, 0)
+    button.Parent = screenGui
+    
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 10)
+    corner.Parent = button
+    
+    button.MouseButton1Click:Connect(function()
+        print("Button clicked!")
+        if toolTransferGUI then
+            toolTransferGUI:Destroy()
+            toolTransferGUI = nil
+            print("GUI closed")
+        else
+            toolTransferGUI = createToolTransferGUI()
+            print("GUI opened")
+        end
+    end)
+    
+    button.MouseEnter:Connect(function()
+        button.BackgroundColor3 = Color3.fromRGB(255, 120, 0)
+    end)
+    
+    button.MouseLeave:Connect(function()
+        button.BackgroundColor3 = Color3.fromRGB(255, 100, 0)
+    end)
+    
+    return button, screenGui
 end
 
 -- ===== PC KEYBOARD INPUT =====
